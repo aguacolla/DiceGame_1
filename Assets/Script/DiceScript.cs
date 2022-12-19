@@ -10,6 +10,7 @@ public class DiceScript : MonoBehaviour
     [SerializeField, ReadOnly] bool thrown;
     [SerializeField, ReadOnly] int DiceValue;
     [SerializeField, ReadOnly] DiceSide[] _ds;
+    public PlayerMovement _playerMovement;
 
     [Button]
     private void SetRefs()
@@ -82,11 +83,22 @@ public class DiceScript : MonoBehaviour
             if (side.OnGround())
             {
                 DiceValue = side.SideValue;
+                _playerMovement.NumberOfJumps = DiceValue;
+                _playerMovement.GoToDestination();
+                StartCoroutine(ChangeCam());
                 Debug.Log(side.SideValue);
-
+               
             }
 
         }
+    }
+
+    IEnumerator ChangeCam()
+    {
+        yield return new WaitForSeconds(0.25f);
+        GameManager.Instance.ChangeCamToPlayer();
+        yield return new WaitForSeconds(3f);
+        GameManager.Instance.ChangeCamTOBoard();
     }
 
 
